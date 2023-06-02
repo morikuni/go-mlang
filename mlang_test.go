@@ -1,15 +1,17 @@
-package mlang
+package mlang_test
 
 import (
 	"fmt"
 	"testing"
 
 	"golang.org/x/text/language"
+
+	"github.com/morikuni/go-mlang"
 )
 
 func TestSet_String_MustGet(t *testing.T) {
-	hello := func(name string) Set[string] {
-		return Set[string]{
+	hello := func(name string) mlang.Set[string] {
+		return mlang.Set[string]{
 			language.English: fmt.Sprintf("Hello, %s!", name),
 			language.French:  fmt.Sprintf("Bonjour, %s!", name),
 		}
@@ -21,16 +23,16 @@ func TestSet_String_MustGet(t *testing.T) {
 }
 
 func TestSet_DynamicMessage_MustGet(t *testing.T) {
-	apple := func() Set[string] {
-		return Set[string]{
+	apple := func() mlang.Set[string] {
+		return mlang.Set[string]{
 			language.English: "apple",
 			language.French:  "pomme",
 		}
 	}
-	hello := func() Set[Message] {
-		return Set[Message]{
-			language.English: Messagef("Hello, %s!", apple()),
-			language.French:  Messagef("Bonjour, %s!", apple()),
+	hello := func() mlang.Set[mlang.Template] {
+		return mlang.Set[mlang.Template]{
+			language.English: mlang.NewTemplate("Hello, %s!", apple()),
+			language.French:  mlang.NewTemplate("Bonjour, %s!", apple()),
 		}
 	}
 
