@@ -1,11 +1,4 @@
-# go-mlang
-
-Go library for i18n (multi language message).
-
-## Usage
-
-```go
-package main
+package mlang_test
 
 import (
 	"fmt"
@@ -50,22 +43,29 @@ func IHavePen(count int) mlang.Set[mlang.Template] {
 
 func ExampleSet() {
 	fmt.Println(InvalidUserName.MustGet(language.English))
-	// Invalid user name
 	fmt.Println(InvalidUserName.MustGet(language.Japanese))
-	// ユーザ名が不正です
+
+	fmt.Println("-----")
 
 	fmt.Println(InvalidPasswordLength(1, 2).MustGet(language.English))
-	// Password must be between 1 and 2 characters long
 	fmt.Println(InvalidPasswordLength(1, 2).MustGet(language.Japanese))
-	// パスワードは1文字以上2文字以下である必要があります
+
+	fmt.Println("-----")
 
 	fmt.Println(IHavePen(1).MustGet(language.English))
-	// I have a pen
 	fmt.Println(IHavePen(1).MustGet(language.Japanese))
-	// 私は1本のペンを持っています
 	fmt.Println(IHavePen(2).MustGet(language.English))
-	// I have 2 pens
 	fmt.Println(IHavePen(2).MustGet(language.Japanese))
+
+	// Output:
+	// Invalid user name
+	// ユーザ名が不正です
+	// -----
+	// Password must be between 1 and 2 characters long
+	// パスワードは1文字以上2文字以下である必要があります
+	// -----
+	// I have a pen
+	// 私は1本のペンを持っています
+	// I have 2 pens
 	// 私は2本のペンを持っています
 }
-```
