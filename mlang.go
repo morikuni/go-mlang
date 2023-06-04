@@ -4,30 +4,64 @@ import (
 	"fmt"
 )
 
-// Set is the set of messages for each language. The type M is usually string.
+// Language can be any comparable types.
+// Basically, golang.org/x/text/language.Tag is used, but you can use any your original types as well.
+type Language = any
+
+type Message interface {
+	isMessage()
+	Get(lang Language) (string, bool)
+	MustGet(lang Language) string
+}
+
+// Dict is the set of messages for each language. The type M is usually string.
 // Template is used for dynamical messages that is evaluated at a timing
 // language specified.
-type Set[M string | Template] map[any]M
+type Dict[M string | Template] map[Language]M
 
-func (s Set[M]) Get(lang any) (string, bool) {
-	if msg, ok := s[lang]; ok {
+func (d Dict[M]) isMessage() {}
+
+func (d Dict[M]) Get(lang Language) (string, bool) {
+	if msg, ok := d[lang]; ok {
 		return eval(msg, lang)
 	}
 
 	return "", false
 }
 
-func (s Set[M]) MustGet(lang any) string {
-	if msg, ok := s[lang]; ok {
+func (d Dict[M]) MustGet(lang Language) string {
+	if msg, ok := d[lang]; ok {
 		return mustEval(msg, lang)
 	}
 
 	// fallback to random language
-	for l, msg := range s {
+	for l, msg := range d {
 		return mustEval(msg, l) // use `l`, not `lang` to ensure using the same language.
 	}
 
 	panic("empty set")
+}
+
+func eval(msg any, lang Language) (string, bool) {
+	switch m := msg.(type) {
+	case Template:
+		return m.eval(lang)
+	case string:
+		return m, true
+	default:
+		panic("unreachable")
+	}
+}
+
+func mustEval(msg any, lang Language) string {
+	switch m := msg.(type) {
+	case Template:
+		return m.mustEval(lang)
+	case string:
+		return m
+	default:
+		panic("unreachable")
+	}
 }
 
 // Template is a message template.
@@ -43,17 +77,11 @@ func NewTemplate(format string, args ...any) Template {
 	}
 }
 
-func (tmp Template) eval(lang any) (string, bool) {
+func (tmp Template) eval(lang Language) (string, bool) {
 	args := make([]any, len(tmp.args))
 	for i, arg := range tmp.args {
 		switch arg := arg.(type) {
-		case Set[string]:
-			var ok bool
-			args[i], ok = arg.Get(lang)
-			if !ok {
-				return "", false
-			}
-		case Set[Template]:
+		case Message:
 			var ok bool
 			args[i], ok = arg.Get(lang)
 			if !ok {
@@ -66,39 +94,15 @@ func (tmp Template) eval(lang any) (string, bool) {
 	return fmt.Sprintf(tmp.format, args...), true
 }
 
-func (tmp Template) mustEval(lang any) string {
+func (tmp Template) mustEval(lang Language) string {
 	args := make([]any, len(tmp.args))
 	for i, arg := range tmp.args {
 		switch arg := arg.(type) {
-		case Set[string]:
-			args[i] = arg.MustGet(lang)
-		case Set[Template]:
+		case Message:
 			args[i] = arg.MustGet(lang)
 		default:
 			args[i] = arg
 		}
 	}
 	return fmt.Sprintf(tmp.format, args...)
-}
-
-func eval(msg any, language any) (string, bool) {
-	switch m := msg.(type) {
-	case Template:
-		return m.eval(language)
-	case string:
-		return m, true
-	default:
-		panic("unreachable")
-	}
-}
-
-func mustEval(msg any, language any) string {
-	switch m := msg.(type) {
-	case Template:
-		return m.mustEval(language)
-	case string:
-		return m
-	default:
-		panic("unreachable")
-	}
 }

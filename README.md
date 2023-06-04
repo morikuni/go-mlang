@@ -1,5 +1,7 @@
 # go-mlang
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/morikuni/go-mlang.svg)](https://pkg.go.dev/github.com/morikuni/go-mlang)
+
 Go library for i18n (multi language message).
 
 ## Usage
@@ -15,20 +17,20 @@ import (
 	"github.com/morikuni/go-mlang"
 )
 
-var InvalidUserName = mlang.Set[string]{
+var InvalidUserName = mlang.Dict[string]{
 	language.English:  "Invalid user name",
 	language.Japanese: "ユーザ名が不正です",
 }
 
-func InvalidPasswordLength(min, max int) mlang.Set[string] {
-	return mlang.Set[string]{
+func InvalidPasswordLength(min, max int) mlang.Message {
+	return mlang.Dict[string]{
 		language.English:  fmt.Sprintf("Password must be between %d and %d characters long", min, max),
 		language.Japanese: fmt.Sprintf("パスワードは%d文字以上%d文字以下である必要があります", min, max),
 	}
 }
 
-func PenCount(count int) mlang.Set[string] {
-	s := mlang.Set[string]{
+func PenCount(count int) mlang.Message {
+	s := mlang.Dict[string]{
 		language.Japanese: fmt.Sprintf("%d本のペン", count),
 	}
 
@@ -41,8 +43,8 @@ func PenCount(count int) mlang.Set[string] {
 	return s
 }
 
-func IHavePen(count int) mlang.Set[mlang.Template] {
-	return mlang.Set[mlang.Template]{
+func IHavePen(count int) mlang.Message {
+	return mlang.Dict[mlang.Template]{
 		language.English:  mlang.NewTemplate("I have %s", PenCount(count)),
 		language.Japanese: mlang.NewTemplate("私は%sを持っています", PenCount(count)),
 	}
