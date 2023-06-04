@@ -13,10 +13,10 @@ import (
 type Language = any
 
 type Message interface {
+	failure.Field
 	isMessage()
 	Get(lang Language) (string, bool)
 	MustGet(lang Language) string
-	SetErrorField(field failure.FieldSetter)
 }
 
 // Dict is the set of messages for each language. The type M is usually string.
