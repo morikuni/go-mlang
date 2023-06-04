@@ -44,7 +44,7 @@ func (d Dict[M]) MustGet(lang Language) string {
 		return mustEval(msg, l) // use `l`, not `lang` to ensure using the same language.
 	}
 
-	panic("empty set")
+	panic("mlang.Dict: empty")
 }
 
 func (d Dict[M]) SetErrorField(field failure.FieldSetter) {
