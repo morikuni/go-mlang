@@ -10,8 +10,8 @@ import (
 )
 
 func TestSet_String_MustGet(t *testing.T) {
-	hello := func(name string) mlang.Set[string] {
-		return mlang.Set[string]{
+	hello := func(name string) mlang.Message {
+		return mlang.Dict[string]{
 			language.English: fmt.Sprintf("Hello, %s!", name),
 			language.French:  fmt.Sprintf("Bonjour, %s!", name),
 		}
@@ -23,14 +23,14 @@ func TestSet_String_MustGet(t *testing.T) {
 }
 
 func TestSet_DynamicMessage_MustGet(t *testing.T) {
-	apple := func() mlang.Set[string] {
-		return mlang.Set[string]{
+	apple := func() mlang.Message {
+		return mlang.Dict[string]{
 			language.English: "apple",
 			language.French:  "pomme",
 		}
 	}
-	hello := func() mlang.Set[mlang.Template] {
-		return mlang.Set[mlang.Template]{
+	hello := func() mlang.Message {
+		return mlang.Dict[mlang.Template]{
 			language.English: mlang.NewTemplate("Hello, %s!", apple()),
 			language.French:  mlang.NewTemplate("Bonjour, %s!", apple()),
 		}
