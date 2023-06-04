@@ -1,5 +1,7 @@
 # go-mlang
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/morikuni/go-mlang.svg)](https://pkg.go.dev/github.com/morikuni/go-mlang)
+
 Go library for i18n (multi language message).
 
 ## Usage
