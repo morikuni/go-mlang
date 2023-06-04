@@ -2,6 +2,10 @@ package mlang
 
 import (
 	"fmt"
+
+	"github.com/morikuni/failure/v2"
+
+	"github.com/morikuni/go-mlang/internal"
 )
 
 // Language can be any comparable types.
@@ -9,6 +13,7 @@ import (
 type Language = any
 
 type Message interface {
+	failure.Field
 	isMessage()
 	Get(lang Language) (string, bool)
 	MustGet(lang Language) string
@@ -40,6 +45,10 @@ func (d Dict[M]) MustGet(lang Language) string {
 	}
 
 	panic("empty set")
+}
+
+func (d Dict[M]) SetErrorField(field failure.FieldSetter) {
+	field.Set(internal.FailureKey, Message(d))
 }
 
 func eval(msg any, lang Language) (string, bool) {

@@ -1,2 +1,4 @@
+github.com/morikuni/failure/v2 v2.0.0-20230512003104-6bb497ead261 h1:Rqq1Kh/HMFt8YZFeW5jopA+l2wjV2+tMcouxbwuMxqs=
+github.com/morikuni/failure/v2 v2.0.0-20230512003104-6bb497ead261/go.mod h1:tHod902kOvu2+09OAbzPMrE4B8fIc+M/2kl/UI3mDQI=
 golang.org/x/text v0.9.0 h1:2sjJmO8cDvYveuX97RDLsxlyUxLl+GHoLxBiRdHllBE=
 golang.org/x/text v0.9.0/go.mod h1:e1OnstbJyHTd6l/uOt8jFFHp6TRDWZR/bV3emEE/zU8=
