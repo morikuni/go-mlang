@@ -88,7 +88,7 @@ func (d Dict[M]) LogValue() slog.Value {
 
 // MarshalJSON implements json.Marshaler.
 func (d Dict[M]) MarshalJSON() ([]byte, error) {
-	return []byte(d.String()), nil
+	return []byte(`"` + d.String() + `"`), nil
 }
 
 func (d Dict[M]) String() string {

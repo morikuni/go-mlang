@@ -1,6 +1,7 @@
 package mlang_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -56,6 +57,22 @@ func TestSetDefaultLanguage(t *testing.T) {
 	equal(t, hello("Alice").MustGet(language.Japanese), "Bonjour, Alice!")
 	mlang.SetDefaultLanguage(language.English)
 	equal(t, hello("Alice").MustGet(language.Japanese), "Hello, Alice!")
+}
+
+func TestDict_MarshalJSON(t *testing.T) {
+	hello := func(name string) mlang.Message {
+		return mlang.Dict[string]{
+			language.English: fmt.Sprintf("Hello, %s!", name),
+			language.French:  fmt.Sprintf("Bonjour, %s!", name),
+		}
+	}
+
+	mlang.SetDefaultLanguage(language.English)
+	bs, err := json.Marshal(hello("Alice"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	equal(t, string(bs), `"Hello, Alice!"`)
 }
 
 func equal(t *testing.T, got, want any) {
