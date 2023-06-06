@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"github.com/morikuni/failure/v2"
-	"golang.org/x/text/language"
 
 	"github.com/morikuni/go-mlang/internal"
 )
@@ -57,7 +56,7 @@ var _ failure.ErrorFormatter = Dict[string]{}
 
 // FormatError implements failure.ErrorFormatter.
 func (d Dict[M]) FormatError(w io.Writer) {
-	io.WriteString(w, d.MustGet(language.English)) // Use language.English as a default, but not needed to be defined.
+	io.WriteString(w, d.MustGet(-1)) // put -1 as a dummy language. Randomly picked language is used.
 }
 
 func eval(msg any, lang Language) (string, bool) {
