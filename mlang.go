@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/morikuni/failure/v2"
+	"golang.org/x/exp/slog"
 
 	"github.com/morikuni/go-mlang/internal"
 )
@@ -25,6 +26,11 @@ type Message interface {
 // language specified.
 type Dict[M string | Template] map[Language]M
 
+var (
+	_ failure.ErrorFormatter = Dict[string]{}
+	_ slog.LogValuer         = Dict[string]{}
+)
+
 func (d Dict[M]) isMessage() {}
 
 func (d Dict[M]) Get(lang Language) (string, bool) {
@@ -40,6 +46,10 @@ func (d Dict[M]) MustGet(lang Language) string {
 		return mustEval(msg, lang)
 	}
 
+	if msg, ok := d[defaultLanguage]; ok {
+		return mustEval(msg, lang)
+	}
+
 	// fallback to random language
 	for l, msg := range d {
 		return mustEval(msg, l) // use `l`, not `lang` to ensure using the same language.
@@ -52,11 +62,29 @@ func (d Dict[M]) SetErrorField(field failure.FieldSetter) {
 	field.Set(internal.FailureKey, Message(d))
 }
 
-var _ failure.ErrorFormatter = Dict[string]{}
-
 // FormatError implements failure.ErrorFormatter.
 func (d Dict[M]) FormatError(w io.Writer) {
-	_, _ = io.WriteString(w, d.MustGet(-1)) // put -1 as a dummy language. Randomly picked language is used.
+	_, _ = io.WriteString(w, d.String()) // Randomly picked language is used.
+}
+
+// LogValue implements slog.LogValuer.
+func (d Dict[M]) LogValue() slog.Value {
+	return slog.StringValue(d.String())
+}
+
+type randomLanguageType struct{}
+
+var (
+	randomLanguage           = randomLanguageType{}
+	defaultLanguage Language = randomLanguage
+)
+
+func SetDefaultLanguage(lang Language) {
+	defaultLanguage = lang
+}
+
+func (d Dict[M]) String() string {
+	return d.MustGet(defaultLanguage) // Randomly picked language is used.
 }
 
 func eval(msg any, lang Language) (string, bool) {
