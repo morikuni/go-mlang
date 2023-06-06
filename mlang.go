@@ -2,6 +2,7 @@ package mlang
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/morikuni/failure/v2"
 
@@ -49,6 +50,13 @@ func (d Dict[M]) MustGet(lang Language) string {
 
 func (d Dict[M]) SetErrorField(field failure.FieldSetter) {
 	field.Set(internal.FailureKey, Message(d))
+}
+
+var _ failure.ErrorFormatter = Dict[string]{}
+
+// FormatError implements failure.ErrorFormatter.
+func (d Dict[M]) FormatError(w io.Writer) {
+	_, _ = io.WriteString(w, d.MustGet(-1)) // put -1 as a dummy language. Randomly picked language is used.
 }
 
 func eval(msg any, lang Language) (string, bool) {
