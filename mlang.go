@@ -1,6 +1,7 @@
 package mlang
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 
@@ -13,6 +14,17 @@ import (
 // Language can be any comparable types.
 // Basically, golang.org/x/text/language.Tag is used, but you can use any your original types as well.
 type Language = any
+
+type randomLanguageType struct{}
+
+var (
+	randomLanguage           = randomLanguageType{}
+	defaultLanguage Language = randomLanguage
+)
+
+func SetDefaultLanguage(lang Language) {
+	defaultLanguage = lang
+}
 
 type Message interface {
 	failure.Field
@@ -29,6 +41,8 @@ type Dict[M string | Template] map[Language]M
 var (
 	_ failure.ErrorFormatter = Dict[string]{}
 	_ slog.LogValuer         = Dict[string]{}
+	_ json.Marshaler         = Dict[string]{}
+	_ fmt.Stringer           = Dict[string]{}
 )
 
 func (d Dict[M]) isMessage() {}
@@ -72,15 +86,9 @@ func (d Dict[M]) LogValue() slog.Value {
 	return slog.StringValue(d.String())
 }
 
-type randomLanguageType struct{}
-
-var (
-	randomLanguage           = randomLanguageType{}
-	defaultLanguage Language = randomLanguage
-)
-
-func SetDefaultLanguage(lang Language) {
-	defaultLanguage = lang
+// MarshalJSON implements json.Marshaler.
+func (d Dict[M]) MarshalJSON() ([]byte, error) {
+	return []byte(d.String()), nil
 }
 
 func (d Dict[M]) String() string {
