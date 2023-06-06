@@ -50,7 +50,7 @@ func IHavePen(count int) mlang.Message {
 	}
 }
 
-func ExampleSet() {
+func main() {
 	fmt.Println(InvalidUserName.MustGet(language.English))
 	// Invalid user name
 	fmt.Println(InvalidUserName.MustGet(language.Japanese))

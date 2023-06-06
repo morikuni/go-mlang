@@ -41,7 +41,7 @@ func IHavePen(count int) mlang.Message {
 	}
 }
 
-func ExampleSet() {
+func ExampleDict() {
 	fmt.Println(InvalidUserName.MustGet(language.English))
 	fmt.Println(InvalidUserName.MustGet(language.Japanese))
 
