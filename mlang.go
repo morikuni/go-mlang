@@ -56,7 +56,7 @@ var _ failure.ErrorFormatter = Dict[string]{}
 
 // FormatError implements failure.ErrorFormatter.
 func (d Dict[M]) FormatError(w io.Writer) {
-	io.WriteString(w, d.MustGet(-1)) // put -1 as a dummy language. Randomly picked language is used.
+	_, _ = io.WriteString(w, d.MustGet(-1)) // put -1 as a dummy language. Randomly picked language is used.
 }
 
 func eval(msg any, lang Language) (string, bool) {
