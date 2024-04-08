@@ -77,7 +77,7 @@ func (d Dict[M]) SetErrorField(field failure.FieldSetter) {
 }
 
 // FormatError implements failure.ErrorFormatter.
-func (d Dict[M]) FormatError(w io.Writer) {
+func (d Dict[M]) FormatError(w failure.ErrorWriter) {
 	_, _ = io.WriteString(w, d.String()) // Randomly picked language is used.
 }
 
