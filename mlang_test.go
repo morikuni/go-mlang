@@ -62,7 +62,7 @@ func TestSetDefaultLanguage(t *testing.T) {
 func TestDict_MarshalJSON(t *testing.T) {
 	hello := func(name string) mlang.Message {
 		return mlang.Dict[string]{
-			language.English: fmt.Sprintf("Hello, %s!", name),
+			language.English: fmt.Sprintf(`Hello, "%s"!`, name),
 			language.French:  fmt.Sprintf("Bonjour, %s!", name),
 		}
 	}
@@ -72,7 +72,7 @@ func TestDict_MarshalJSON(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	equal(t, string(bs), `"Hello, Alice!"`)
+	equal(t, string(bs), `"Hello, \"Alice\"!"`)
 }
 
 func equal(t *testing.T, got, want any) {
